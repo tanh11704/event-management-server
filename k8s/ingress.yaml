@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: eventmanagement-ingress
+  namespace: eventmanagement
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "eventmanagement-ip"
+    networking.gke.io/managed-certificates: "eventmanagement-ssl-cert"
+    kubernetes.io/ingress.class: "gce"
+spec:
+  defaultBackend:
+    service:
+      name: eventmanagement-api
+      port:
+        number: 80
+  rules:
+    - host: api.sukienvku.id.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: eventmanagement-api
+                port:
+                  number: 80
+
+---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: eventmanagement-ssl-cert
+  namespace: eventmanagement
+spec:
+  domains:
+    - api.sukienvku.id.vn

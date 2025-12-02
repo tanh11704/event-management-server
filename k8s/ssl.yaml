@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: eventmanagement-ssl-cert
+  namespace: eventmanagement
+spec:
+  domains:
+    - api.sukienvku.id.vn

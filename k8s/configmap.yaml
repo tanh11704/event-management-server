@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eventmanagement-config
+  namespace: eventmanagement
+data:
+  cors.allowed.origins: "*"
+  app.frontend.url: "https://your-frontend-domain.com"
