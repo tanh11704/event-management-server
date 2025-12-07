@@ -4,5 +4,5 @@ metadata:
   name: eventmanagement-config
   namespace: eventmanagement
 data:
-  cors.allowed.origins: "*"
-  app.frontend.url: "https://your-frontend-domain.com"
+  cors.allowed.origins: "https://sukienvku.id.vn,https://www.sukienvku.id.vn"
+  app.frontend.url: "https://sukienvku.id.vn"

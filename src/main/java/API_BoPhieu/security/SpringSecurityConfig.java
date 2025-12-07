@@ -2,6 +2,7 @@ package API_BoPhieu.security;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,17 +19,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EnableMethodSecurity(prePostEnabled = true)
 public class SpringSecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Value("${app.cors.allowed-origins}")
-    private List<String> allowedOrigins;
+    private String allowedOriginsString;
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
@@ -69,7 +70,26 @@ public class SpringSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOriginPatterns(Arrays.asList("*"));
+        // Parse string thành list (comma-separated)
+        if (allowedOriginsString != null && !allowedOriginsString.trim().isEmpty()) {
+            String trimmed = allowedOriginsString.trim();
+            if ("*".equals(trimmed)) {
+                // Nếu là "*", dùng allowedOriginPatterns để cho phép tất cả
+                config.setAllowedOriginPatterns(Arrays.asList("*"));
+                config.setAllowCredentials(false);
+            } else {
+                // Split comma-separated string thành list và trim từng giá trị
+                List<String> origins = Arrays.stream(trimmed.split(",")).map(String::trim)
+                        .filter(s -> !s.isEmpty()).collect(Collectors.toList());
+                config.setAllowedOrigins(origins);
+                // Cho phép credentials khi có origin cụ thể (thường là trong dev)
+                config.setAllowCredentials(true);
+            }
+        } else {
+            // Default: cho phép tất cả
+            config.setAllowedOriginPatterns(Arrays.asList("*"));
+            config.setAllowCredentials(false);
+        }
 
         config.setAllowedHeaders(Arrays.asList("*"));
 
@@ -77,8 +97,6 @@ public class SpringSecurityConfig {
                 Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
 
         config.setExposedHeaders(Arrays.asList("*"));
-
-        config.setAllowCredentials(false);
 
         config.setMaxAge(3600L);
 

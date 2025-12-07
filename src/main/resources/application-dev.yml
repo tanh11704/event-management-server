@@ -18,7 +18,7 @@ app:
     expirationMs: 900000
     refreshExpirationMs: 604800000
   cors:
-    allowed-origins: "*"
+    allowed-origins: "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:3000"
   frontend:
     url: http://localhost:5173
 
