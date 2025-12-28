@@ -10,21 +10,19 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class EventManagementApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(EventManagementApplication.class, args);
-	}
+  public static void main(final String[] args) {
+    SpringApplication.run(EventManagementApplication.class, args);
+  }
 
-	@Bean(initMethod = "migrate")
-	public Flyway flyway(DataSource dataSource) {
-		System.out.println(">>>>>>>>>>>>>> ĐANG KÍCH HOẠT FLYWAY THỦ CÔNG <<<<<<<<<<<<<<");
+  @Bean(initMethod = "migrate")
+  public Flyway flyway(final DataSource dataSource) {
 
-		Flyway flyway = Flyway.configure()
-				.dataSource(dataSource)
-				.locations("classpath:db/migration")
-				.baselineOnMigrate(true)
-				.load();
+    final Flyway flyway = Flyway.configure()
+        .dataSource(dataSource)
+        .locations("classpath:db/migration")
+        .baselineOnMigrate(true)
+        .load();
 
-		return flyway;
-	}
-
+    return flyway;
+  }
 }
