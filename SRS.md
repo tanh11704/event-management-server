@@ -2,8 +2,8 @@
 
 ## HỆ THỐNG QUẢN LÝ SỰ KIỆN VÀ ĐIỂM DANH THÔNG MINH TRONG KHUÔN VIÊN TRƯỜNG ĐẠI HỌC
 
-**Phiên bản:** 1.0  
-**Ngày:** 28/12/2025  
+**Phiên bản:** 1.0
+**Ngày:** 28/12/2025
 **Trạng thái:** Draft
 
 ---

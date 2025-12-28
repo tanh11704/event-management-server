@@ -11,6 +11,21 @@ spring:
     baseline-on-migrate: true
     validate-on-migrate: true
 
+api:
+  prefix: /api/v1
+
+jwt:
+  issuer: event-management-api
+  audience: event-management-client
+  access-token:
+    secret: ${JWT_ACCESS_SECRET:accessSecretKeyForDevelopmentOnlyDoNotUseInProduction12345}
+    expiration: 1800000
+  refresh-token:
+    secret: ${JWT_REFRESH_SECRET:refreshSecretKeyForDevelopmentOnlyDoNotUseInProduction1234}
+    expiration: 604800000
+
 logging:
   level:
     org.flywaydb: DEBUG
+
+
