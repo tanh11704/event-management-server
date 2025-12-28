@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: EventManagement
+  datasource:
+    url: jdbc:postgresql://localhost:5432/eventmanagement
+    username: postgres
+    password: postgres
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+
+logging:
+  level:
+    org.flywaydb: DEBUG
