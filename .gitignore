@@ -41,13 +41,6 @@ build/
 
 uploads/
 logs/
-.idea/
-.github/
-
-report-dashboard/
 
 .DS_Store
-jmeter.log
-GetEventTest.jmx
-result.csv
 logs/

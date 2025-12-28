@@ -29,7 +29,7 @@ cloudinary:
 
 gemini:
   api:
-    key: AIzaSyDSR-BEcj9XzUNxclgAq8gNfJg0WcwufzQ
+    key: AIzaSyBVkHFem-Q0XcnZqakuarRL4t_EK5HjKM0
 
 logging:
   level:

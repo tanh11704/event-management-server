@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: eventmanagement-config
-  namespace: eventmanagement
-data:
-  cors.allowed.origins: "https://sukienvku.id.vn,https://www.sukienvku.id.vn"
-  app.frontend.url: "https://sukienvku.id.vn"
