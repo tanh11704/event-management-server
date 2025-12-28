@@ -126,10 +126,10 @@ public class JwtTokenProvider {
           .getPayload();
     } catch (final ExpiredJwtException e) {
       throw new ApiException(
-          HttpStatus.UNAUTHORIZED, ErrorCode.TOKEN_EXPIRED, "Access token đã hết hạn");
+          HttpStatus.UNAUTHORIZED, ErrorCode.AUTH_TOKEN_EXPIRED, "Access token đã hết hạn");
     } catch (final JwtException e) {
       throw new ApiException(
-          HttpStatus.UNAUTHORIZED, ErrorCode.INVALID_TOKEN, "Access token không hợp lệ");
+          HttpStatus.UNAUTHORIZED, ErrorCode.AUTH_INVALID_TOKEN, "Access token không hợp lệ");
     }
   }
 
@@ -144,10 +144,10 @@ public class JwtTokenProvider {
           .getPayload();
     } catch (final ExpiredJwtException e) {
       throw new ApiException(
-          HttpStatus.UNAUTHORIZED, ErrorCode.TOKEN_EXPIRED, "Refresh token đã hết hạn");
+          HttpStatus.UNAUTHORIZED, ErrorCode.AUTH_TOKEN_EXPIRED, "Refresh token đã hết hạn");
     } catch (final JwtException e) {
       throw new ApiException(
-          HttpStatus.UNAUTHORIZED, ErrorCode.INVALID_TOKEN, "Refresh token không hợp lệ");
+          HttpStatus.UNAUTHORIZED, ErrorCode.AUTH_INVALID_TOKEN, "Refresh token không hợp lệ");
     }
   }
 
@@ -156,7 +156,7 @@ public class JwtTokenProvider {
     if (!expectedType.equals(tokenType)) {
       throw new ApiException(
           HttpStatus.UNAUTHORIZED,
-          ErrorCode.INVALID_TOKEN,
+          ErrorCode.AUTH_INVALID_TOKEN,
           "Token type không hợp lệ. Yêu cầu: " + expectedType);
     }
   }

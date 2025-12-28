@@ -40,7 +40,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             HttpStatus.UNAUTHORIZED.value(),
             HttpStatus.UNAUTHORIZED.getReasonPhrase(),
             "Chưa xác thực. Vui lòng đăng nhập.",
-            ErrorCode.UNAUTHORIZED.name(),
+            ErrorCode.AUTH_UNAUTHORIZED.name(),
             request.getRequestURI(),
             null,
             null);

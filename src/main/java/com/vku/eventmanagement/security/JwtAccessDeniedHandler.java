@@ -40,7 +40,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
             HttpStatus.FORBIDDEN.value(),
             HttpStatus.FORBIDDEN.getReasonPhrase(),
             "Không có quyền truy cập tài nguyên này.",
-            ErrorCode.FORBIDDEN.name(),
+            ErrorCode.AUTH_FORBIDDEN.name(),
             request.getRequestURI(),
             null,
             null);

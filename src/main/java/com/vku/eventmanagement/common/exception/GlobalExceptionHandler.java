@@ -3,6 +3,8 @@ package com.vku.eventmanagement.common.exception;
 import java.time.Instant;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -22,26 +24,28 @@ import jakarta.validation.ConstraintViolationException;
 @RestControllerAdvice
 public final class GlobalExceptionHandler {
 
-  private record ErrorExtras(Object details, List<ErrorResponse.FieldViolation> violations) {
-  }
+  private static final Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+  private record ErrorExtras(Object details, List<ErrorResponse.FieldViolation> violations) {}
 
   private static final String EMPTY = "";
-  private static final String PREFIX_MISSING_REQUIRED_PARAMETER = "Missing required parameter: ";
+  private static final String PREFIX_MISSING_REQUIRED_PARAMETER = "Thiếu tham số bắt buộc: ";
 
-  private static final String MSG_VALIDATION_FAILED = "Validation failed";
-  private static final String MSG_MALFORMED_JSON = "Malformed JSON request";
-  private static final String MSG_UNAUTHORIZED = "Unauthorized";
-  private static final String MSG_FORBIDDEN = "Forbidden";
-  private static final String MSG_DATA_INTEGRITY_VIOLATION = "Data integrity violation";
-  private static final String MSG_INTERNAL_SERVER_ERROR = "Internal server error";
+  private static final String MSG_VALIDATION_FAILED = "Dữ liệu không hợp lệ";
+  private static final String MSG_MALFORMED_JSON = "Định dạng JSON không hợp lệ";
+  private static final String MSG_UNAUTHORIZED = "Chưa xác thực";
+  private static final String MSG_FORBIDDEN = "Không có quyền truy cập";
+  private static final String MSG_DATA_INTEGRITY_VIOLATION = "Vi phạm ràng buộc dữ liệu";
+  private static final String MSG_INTERNAL_SERVER_ERROR = "Lỗi hệ thống";
 
   @ExceptionHandler(ApiException.class)
   public ResponseEntity<ErrorResponse> handleApiException(
       final ApiException ex, final HttpServletRequest request) {
+    LOG.warn("ApiException: {} - {}", ex.getCode(), ex.getMessage());
     final HttpStatusCode status = ex.getStatus();
     return ResponseEntity.status(status)
         .body(
-            build(
+            buildFromApiException(
                 status,
                 ex.getMessage(),
                 ex.getCode(),
@@ -53,15 +57,17 @@ public final class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(
       final MethodArgumentNotValidException ex, final HttpServletRequest request) {
     final HttpStatus status = HttpStatus.BAD_REQUEST;
-    final List<ErrorResponse.FieldViolation> violations = ex.getBindingResult().getFieldErrors().stream()
-        .map(err -> new ErrorResponse.FieldViolation(err.getField(), err.getDefaultMessage()))
-        .toList();
+    final List<ErrorResponse.FieldViolation> violations =
+        ex.getBindingResult().getFieldErrors().stream()
+            .map(err -> new ErrorResponse.FieldViolation(err.getField(), err.getDefaultMessage()))
+            .toList();
+    LOG.debug("Validation error: {} violations", violations.size());
     return ResponseEntity.status(status)
         .body(
             build(
                 status,
                 MSG_VALIDATION_FAILED,
-                ErrorCode.VALIDATION_ERROR.name(),
+                ErrorCode.COMMON_VALIDATION_ERROR,
                 request,
                 new ErrorExtras(null, violations)));
   }
@@ -70,15 +76,17 @@ public final class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleBindException(
       final BindException ex, final HttpServletRequest request) {
     final HttpStatus status = HttpStatus.BAD_REQUEST;
-    final List<ErrorResponse.FieldViolation> violations = ex.getBindingResult().getFieldErrors().stream()
-        .map(err -> new ErrorResponse.FieldViolation(err.getField(), err.getDefaultMessage()))
-        .toList();
+    final List<ErrorResponse.FieldViolation> violations =
+        ex.getBindingResult().getFieldErrors().stream()
+            .map(err -> new ErrorResponse.FieldViolation(err.getField(), err.getDefaultMessage()))
+            .toList();
+    LOG.debug("Bind error: {} violations", violations.size());
     return ResponseEntity.status(status)
         .body(
             build(
                 status,
                 MSG_VALIDATION_FAILED,
-                ErrorCode.VALIDATION_ERROR.name(),
+                ErrorCode.COMMON_VALIDATION_ERROR,
                 request,
                 new ErrorExtras(null, violations)));
   }
@@ -87,17 +95,20 @@ public final class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleConstraintViolation(
       final ConstraintViolationException ex, final HttpServletRequest request) {
     final HttpStatus status = HttpStatus.BAD_REQUEST;
-    final List<ErrorResponse.FieldViolation> violations = ex.getConstraintViolations().stream()
-        .map(
-            v -> new ErrorResponse.FieldViolation(
-                v.getPropertyPath().toString(), v.getMessage()))
-        .toList();
+    final List<ErrorResponse.FieldViolation> violations =
+        ex.getConstraintViolations().stream()
+            .map(
+                v ->
+                    new ErrorResponse.FieldViolation(
+                        v.getPropertyPath().toString(), v.getMessage()))
+            .toList();
+    LOG.debug("Constraint violation: {} violations", violations.size());
     return ResponseEntity.status(status)
         .body(
             build(
                 status,
                 MSG_VALIDATION_FAILED,
-                ErrorCode.VALIDATION_ERROR.name(),
+                ErrorCode.COMMON_VALIDATION_ERROR,
                 request,
                 new ErrorExtras(null, violations)));
   }
@@ -106,12 +117,13 @@ public final class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleNotReadable(
       final HttpMessageNotReadableException ex, final HttpServletRequest request) {
     final HttpStatus status = HttpStatus.BAD_REQUEST;
+    LOG.debug("Malformed JSON: {}", ex.getMessage());
     return ResponseEntity.status(status)
         .body(
             build(
                 status,
                 MSG_MALFORMED_JSON,
-                ErrorCode.MALFORMED_JSON.name(),
+                ErrorCode.COMMON_MALFORMED_JSON,
                 request,
                 new ErrorExtras(null, null)));
   }
@@ -121,12 +133,13 @@ public final class GlobalExceptionHandler {
       final MissingServletRequestParameterException ex, final HttpServletRequest request) {
     final HttpStatus status = HttpStatus.BAD_REQUEST;
     final String msg = PREFIX_MISSING_REQUIRED_PARAMETER + ex.getParameterName();
+    LOG.debug("Missing parameter: {}", ex.getParameterName());
     return ResponseEntity.status(status)
         .body(
             build(
                 status,
                 msg,
-                ErrorCode.MISSING_PARAMETER.name(),
+                ErrorCode.COMMON_MISSING_PARAMETER,
                 request,
                 new ErrorExtras(null, null)));
   }
@@ -135,12 +148,14 @@ public final class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleDataIntegrity(
       final DataIntegrityViolationException ex, final HttpServletRequest request) {
     final HttpStatus status = HttpStatus.CONFLICT;
+    // TODO: Có thể refine thành USER_EMAIL_ALREADY_EXISTS, EVENT_DUPLICATE_REGISTRATION
+    LOG.warn("Data integrity violation: {}", ex.getMostSpecificCause().getMessage());
     return ResponseEntity.status(status)
         .body(
             build(
                 status,
                 MSG_DATA_INTEGRITY_VIOLATION,
-                ErrorCode.DATA_INTEGRITY_VIOLATION.name(),
+                ErrorCode.COMMON_DATA_INTEGRITY_VIOLATION,
                 request,
                 new ErrorExtras(null, null)));
   }
@@ -149,12 +164,13 @@ public final class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleAuthentication(
       final AuthenticationException ex, final HttpServletRequest request) {
     final HttpStatus status = HttpStatus.UNAUTHORIZED;
+    LOG.debug("Authentication failed: {}", ex.getMessage());
     return ResponseEntity.status(status)
         .body(
             build(
                 status,
                 MSG_UNAUTHORIZED,
-                ErrorCode.UNAUTHORIZED.name(),
+                ErrorCode.AUTH_UNAUTHORIZED,
                 request,
                 new ErrorExtras(null, null)));
   }
@@ -163,12 +179,13 @@ public final class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleAccessDenied(
       final AccessDeniedException ex, final HttpServletRequest request) {
     final HttpStatus status = HttpStatus.FORBIDDEN;
+    LOG.debug("Access denied: {}", ex.getMessage());
     return ResponseEntity.status(status)
         .body(
             build(
                 status,
                 MSG_FORBIDDEN,
-                ErrorCode.FORBIDDEN.name(),
+                ErrorCode.AUTH_FORBIDDEN,
                 request,
                 new ErrorExtras(null, null)));
   }
@@ -177,17 +194,27 @@ public final class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleGeneric(
       final Exception ex, final HttpServletRequest request) {
     final HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+    LOG.error("Unhandled exception at {}: ", request.getRequestURI(), ex);
     return ResponseEntity.status(status)
         .body(
             build(
                 status,
                 MSG_INTERNAL_SERVER_ERROR,
-                ErrorCode.INTERNAL_ERROR.name(),
+                ErrorCode.COMMON_INTERNAL_ERROR,
                 request,
                 new ErrorExtras(null, null)));
   }
 
   private ErrorResponse build(
+      final HttpStatusCode status,
+      final String message,
+      final ErrorCode code,
+      final HttpServletRequest request,
+      final ErrorExtras extras) {
+    return buildFromApiException(status, message, code.name(), request, extras);
+  }
+
+  private ErrorResponse buildFromApiException(
       final HttpStatusCode status,
       final String message,
       final String code,
