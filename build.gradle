@@ -70,7 +70,7 @@ tasks.withType(Checkstyle).configureEach {
 spotless {
 	java {
 		target 'src/**/*.java'
-		googleJavaFormat('1.33.0')
+		googleJavaFormat('1.25.2')
 		removeUnusedImports()
 		importOrder('java', 'javax', 'org', 'com', '')
 		trimTrailingWhitespace()
