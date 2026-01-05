@@ -1,5 +1,10 @@
 package com.vku.eventmanagement.modules.auth.controller;
 
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.vku.eventmanagement.common.response.ApiResponse;
 import com.vku.eventmanagement.modules.auth.dto.request.LoginRequest;
 import com.vku.eventmanagement.modules.auth.dto.request.RefreshTokenRequest;
@@ -7,12 +12,9 @@ import com.vku.eventmanagement.modules.auth.dto.request.RegisterRequest;
 import com.vku.eventmanagement.modules.auth.dto.response.AuthResponse;
 import com.vku.eventmanagement.modules.auth.dto.response.UserResponse;
 import com.vku.eventmanagement.modules.auth.service.AuthService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("${api.prefix}/auth")
