@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
@@ -15,6 +16,10 @@ public class EventManagementApplication {
   }
 
   @Bean(initMethod = "migrate")
+  @ConditionalOnProperty(
+      value = "spring.flyway.enabled",
+      havingValue = "true",
+      matchIfMissing = true)
   public Flyway flyway(final DataSource dataSource) {
 
     final Flyway flyway =
