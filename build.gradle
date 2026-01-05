@@ -88,3 +88,9 @@ spotless {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// Ensure annotation processing is enabled
+tasks.withType(JavaCompile).configureEach {
+	options.annotationProcessorPath = configurations.annotationProcessor
+	options.compilerArgs.add('-parameters')
+}
