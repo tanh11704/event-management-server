@@ -10,6 +10,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,13 +54,13 @@ public class UserEntity {
   @Column(name = "updated_at", nullable = false)
   private Instant updatedAt;
 
-  @jakarta.persistence.PrePersist
+  @PrePersist
   protected void onCreate() {
     createdAt = Instant.now();
     updatedAt = Instant.now();
   }
 
-  @jakarta.persistence.PreUpdate
+  @PreUpdate
   protected void onUpdate() {
     updatedAt = Instant.now();
   }

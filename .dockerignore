@@ -1,0 +1,63 @@
+# Build artifacts
+build/
+bin/
+.gradle/
+out/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.cursor/
+
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+!README.md
+HELP.md
+
+# Test files
+src/test/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+*~
+
+# Reports
+build/reports/
+build/test-results/
+
+# Spotless
+build/spotless-*/
+
+# Checkstyle
+build/checkstyle/
+
+# Gradle
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties

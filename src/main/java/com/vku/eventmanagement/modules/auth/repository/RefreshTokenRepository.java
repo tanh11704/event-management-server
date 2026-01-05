@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.vku.eventmanagement.modules.auth.entity.RefreshTokenEntity;
-import com.vku.eventmanagement.modules.auth.entity.UserEntity;
 
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshTokenEntity, UUID> {
@@ -18,10 +17,6 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshTokenEntity
   Optional<RefreshTokenEntity> findByTokenHash(String tokenHash);
 
   @Modifying
-  @Query("DELETE FROM RefreshTokenEntity r WHERE r.user = :user")
-  void deleteByUser(@Param("user") UserEntity user);
-
-  @Modifying
-  @Query("DELETE FROM RefreshTokenEntity r WHERE r.user.id = :userId")
+  @Query(value = "DELETE FROM refresh_tokens WHERE user_id = :userId", nativeQuery = true)
   void deleteByUserId(@Param("userId") UUID userId);
 }

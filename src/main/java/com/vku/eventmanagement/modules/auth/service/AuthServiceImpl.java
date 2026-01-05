@@ -126,7 +126,16 @@ public class AuthServiceImpl implements AuthService {
     refreshToken.setRevokedAt(Instant.now());
     refreshTokenRepository.save(refreshToken);
 
-    final UserEntity user = refreshToken.getUser();
+    // Manually fetch user by userId
+    final UserEntity user =
+        userRepository
+            .findById(refreshToken.getUserId())
+            .orElseThrow(
+                () ->
+                    new ApiException(
+                        HttpStatus.NOT_FOUND,
+                        ErrorCode.USER_NOT_FOUND,
+                        "Người dùng không tồn tại"));
 
     if (user.getStatus() != UserStatus.ACTIVE) {
       throw new ApiException(
@@ -165,7 +174,7 @@ public class AuthServiceImpl implements AuthService {
     // Save refresh token hash to database
     final RefreshTokenEntity refreshTokenEntity =
         RefreshTokenEntity.builder()
-            .user(user)
+            .userId(user.getId())
             .tokenHash(hashToken(refreshToken))
             .expiresAt(Instant.now().plusMillis(jwtTokenProvider.getRefreshTokenExpiration()))
             .build();
