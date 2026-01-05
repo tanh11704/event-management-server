@@ -21,6 +21,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Clean and Compile
+        run: ./gradlew clean compileJava
+
       - name: Check Code Formatting (Spotless)
         run: ./gradlew spotlessCheck
 
