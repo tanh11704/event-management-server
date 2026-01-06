@@ -1,5 +1,20 @@
 package com.vku.eventmanagement.modules.auth.service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.Instant;
+import java.util.Base64;
+import java.util.UUID;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.vku.eventmanagement.common.exception.ApiException;
 import com.vku.eventmanagement.common.exception.ErrorCode;
 import com.vku.eventmanagement.modules.auth.dto.request.ChangePasswordRequest;
@@ -21,21 +36,9 @@ import com.vku.eventmanagement.modules.auth.repository.RefreshTokenRepository;
 import com.vku.eventmanagement.modules.auth.repository.UserRepository;
 import com.vku.eventmanagement.modules.notification.service.EmailService;
 import com.vku.eventmanagement.security.JwtTokenProvider;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.time.Instant;
-import java.util.Base64;
-import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional

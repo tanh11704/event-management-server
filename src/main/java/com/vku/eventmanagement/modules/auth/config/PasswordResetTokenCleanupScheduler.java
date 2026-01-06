@@ -1,11 +1,13 @@
 package com.vku.eventmanagement.modules.auth.config;
 
-import com.vku.eventmanagement.modules.auth.service.AuthService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import com.vku.eventmanagement.modules.auth.service.AuthService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Scheduled task to cleanup expired password reset tokens. Keeps tokens for audit purposes
