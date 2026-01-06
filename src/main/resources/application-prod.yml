@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/eventmanagement}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+
+logging:
+  level:
+    root: INFO
+    com.vku.eventmanagement: INFO
+    org.flywaydb: INFO
+
+jwt:
+  access-token:
+    secret: ${JWT_ACCESS_SECRET:}
+  refresh-token:
+    secret: ${JWT_REFRESH_SECRET:}
+
+app:
+  email:
+    template:
+      cache: true
+  password-reset:
+    base-url: ${APP_BASE_URL:}

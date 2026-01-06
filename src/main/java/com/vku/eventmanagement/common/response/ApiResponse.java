@@ -1,7 +1,9 @@
 package com.vku.eventmanagement.common.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.vku.eventmanagement.common.exception.ErrorResponse;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public final class ApiResponse<T> {
 
   private final boolean success;

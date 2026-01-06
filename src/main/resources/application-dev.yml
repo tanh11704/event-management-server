@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/eventmanagement
+    username: postgres
+    password: postgres
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:tuanpham.5417@gmail.com}
+    password: ${MAIL_PASSWORD:pfal eexf yfof xnrq}
+
+logging:
+  level:
+    org.flywaydb: DEBUG
+    com.vku.eventmanagement: DEBUG
+
+jwt:
+  access-token:
+    secret: ${JWT_ACCESS_SECRET:accessSecretKeyForDevelopmentOnlyDoNotUseInProduction12345}
+  refresh-token:
+    secret: ${JWT_REFRESH_SECRET:refreshSecretKeyForDevelopmentOnlyDoNotUseInProduction1234}
+
+app:
+  email:
+    template:
+      cache: false
+  password-reset:
+    base-url: ${APP_BASE_URL:http://localhost:8080}

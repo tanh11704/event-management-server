@@ -49,7 +49,9 @@ public class SecurityConfig {
                 auth.requestMatchers(
                         apiPrefix + "/auth/register",
                         apiPrefix + "/auth/login",
-                        apiPrefix + "/auth/refresh")
+                        apiPrefix + "/auth/refresh",
+                        apiPrefix + "/auth/forgot-password",
+                        apiPrefix + "/auth/reset-password")
                     .permitAll()
                     .anyRequest()
                     .authenticated())

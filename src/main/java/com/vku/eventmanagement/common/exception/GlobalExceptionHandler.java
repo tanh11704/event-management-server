@@ -1,8 +1,9 @@
 package com.vku.eventmanagement.common.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import java.time.Instant;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,13 +14,12 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolationException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 @RestControllerAdvice
 public final class GlobalExceptionHandler {
@@ -35,6 +35,7 @@ public final class GlobalExceptionHandler {
   private static final String MSG_MALFORMED_JSON = "Định dạng JSON không hợp lệ";
   private static final String MSG_UNAUTHORIZED = "Chưa xác thực";
   private static final String MSG_FORBIDDEN = "Không có quyền truy cập";
+  private static final String MSG_NOT_FOUND = "Endpoint không tồn tại";
   private static final String MSG_DATA_INTEGRITY_VIOLATION = "Vi phạm ràng buộc dữ liệu";
   private static final String MSG_INTERNAL_SERVER_ERROR = "Lỗi hệ thống";
 
@@ -186,6 +187,36 @@ public final class GlobalExceptionHandler {
                 status,
                 MSG_FORBIDDEN,
                 ErrorCode.AUTH_FORBIDDEN,
+                request,
+                new ErrorExtras(null, null)));
+  }
+
+  @ExceptionHandler(NoHandlerFoundException.class)
+  public ResponseEntity<ErrorResponse> handleNoHandlerFound(
+      final NoHandlerFoundException ex, final HttpServletRequest request) {
+    final HttpStatus status = HttpStatus.NOT_FOUND;
+    LOG.debug("No handler found for: {}", ex.getRequestURL());
+    return ResponseEntity.status(status)
+        .body(
+            build(
+                status,
+                MSG_NOT_FOUND,
+                ErrorCode.COMMON_NOT_FOUND,
+                request,
+                new ErrorExtras(null, null)));
+  }
+
+  @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+  public ResponseEntity<ErrorResponse> handleMethodNotSupported(
+      final HttpRequestMethodNotSupportedException ex, final HttpServletRequest request) {
+    final HttpStatus status = HttpStatus.NOT_FOUND;
+    LOG.debug("Method not supported: {} for {}", ex.getMethod(), request.getRequestURI());
+    return ResponseEntity.status(status)
+        .body(
+            build(
+                status,
+                MSG_NOT_FOUND,
+                ErrorCode.COMMON_NOT_FOUND,
                 request,
                 new ErrorExtras(null, null)));
   }

@@ -92,6 +92,12 @@ jobs:
             echo "POSTGRES_PASSWORD=${{ secrets.PROD_DB_PASSWORD }}" >> .env
             echo "JWT_ACCESS_SECRET=${{ secrets.PROD_JWT_ACCESS }}" >> .env
             echo "JWT_REFRESH_SECRET=${{ secrets.PROD_JWT_REFRESH }}" >> .env
+            echo "MAIL_HOST=${{ secrets.PROD_MAIL_HOST }}" >> .env
+            echo "MAIL_PORT=${{ secrets.PROD_MAIL_PORT }}" >> .env
+            echo "MAIL_USERNAME=${{ secrets.PROD_MAIL_USERNAME }}" >> .env
+            echo "MAIL_PASSWORD=${{ secrets.PROD_MAIL_PASSWORD }}" >> .env
+            echo "APP_BASE_URL=${{ secrets.PROD_APP_BASE_URL }}" >> .env
+            echo "APP_EMAIL_SENDER_NAME=${{ secrets.PROD_APP_EMAIL_SENDER_NAME }}" >> .env
 
             docker compose -f docker-compose.prod.yml pull
 
