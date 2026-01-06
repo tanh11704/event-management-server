@@ -16,6 +16,24 @@ spring:
   h2:
     console:
       enabled: false
+  mail:
+    host: localhost
+    port: 587
+    username: test@test.com
+    password: test
+
+jwt:
+  issuer: test-issuer
+  audience: test-audience
+  access-token:
+    secret: testAccessSecretKeyForTestingOnlyMustBeAtLeast32CharactersLong
+    expiration: 1800000
+  refresh-token:
+    secret: testRefreshSecretKeyForTestingOnlyMustBeAtLeast32CharactersLong
+    expiration: 604800000
+
+api:
+  prefix: /api/v1
 
 logging:
   level:
