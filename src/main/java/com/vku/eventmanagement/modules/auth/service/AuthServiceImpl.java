@@ -47,6 +47,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthServiceImpl implements AuthService {
 
   private static final long MILLIS_PER_SECOND = 1000L;
+  private static final int PASSWORD_RESET_TOKEN_EXPIRATION_SECONDS = 3600; // 1 hour
+  private static final int RESET_TOKEN_BYTES = 32; // 256-bit entropy
 
   private final UserRepository userRepository;
   private final RefreshTokenRepository refreshTokenRepository;
@@ -283,7 +285,7 @@ public class AuthServiceImpl implements AuthService {
                   PasswordResetTokenEntity.builder()
                       .userId(user.getId())
                       .tokenHash(tokenHash)
-                      .expiresAt(Instant.now().plusSeconds(3600))
+                      .expiresAt(Instant.now().plusSeconds(PASSWORD_RESET_TOKEN_EXPIRATION_SECONDS))
                       .build();
               passwordResetTokenRepository.save(resetTokenEntity);
 
@@ -356,7 +358,7 @@ public class AuthServiceImpl implements AuthService {
 
   private String generateResetToken() {
     // Generate cryptographically secure random token (256-bit entropy)
-    final byte[] randomBytes = new byte[32];
+    final byte[] randomBytes = new byte[RESET_TOKEN_BYTES];
     new SecureRandom().nextBytes(randomBytes);
     return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
   }
